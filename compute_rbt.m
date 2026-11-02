@@ -11,4 +11,5 @@
 %the world-frame coordinates of the points in Plist_box
 function Plist_world = compute_rbt(x,y,theta,Plist_box)
     % your code here
+    Plist_world = [cosine(theta), -sin(theta); sin(theta), cosine(theta)]*P_list_box + [x; y];
 end
