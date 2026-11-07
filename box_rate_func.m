@@ -19,5 +19,21 @@
 %dVdt = [dxdt;dydt;dthetadt;d2xdt2;d2ydt2;d2thetadt2]:
 % the time derivative of the state vector
 function dVdt = box_rate_func(t,V,box_params)
-    %your code here
+
+    P_now = compute_rbt(V(1),V(2),V(3),box_params.P_box);
+    d2thetadt2=0;
+
+    for i = 1:length(box_params.k_list)
+            PA_n=P_now(i,:);
+            PB_n=box_params.P_world(i,:);
+            F_list(i,:)=compute_spring_force(box_params.k_list(i),box_params.l0_list(i),PA_n,PB_n);
+    end
+
+    for i = 1:length(F_list)
+        d2thetadt2=d2thetadt2+(1/box_params.I)*((P_now(i,1)-V(1))*F_list(i,2)-(P_now(i,2)-V(2))*F_list(i,1));
+    end
+
+    d2Vdt2=(1/box_params.m)*sum(F_list,1)+[0,box_params.g];
+    d2thetadt2;
+    dVdt=[V(4:end);d2Vdt2';d2thetadt2];
 end

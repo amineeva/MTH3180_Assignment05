@@ -10,6 +10,6 @@
 %Plist_world: a 2 x n matrix of points describing
 %the world-frame coordinates of the points in Plist_box
 function Plist_world = compute_rbt(x,y,theta,Plist_box)
-    % your code here
-    Plist_world = [cosine(theta), -sin(theta); sin(theta), cosine(theta)]*P_list_box + [x; y];
+    R=[cos(theta),-sin(theta);sin(theta),cos(theta)];
+    Plist_world=Plist_box*R'+[x,y];
 end
