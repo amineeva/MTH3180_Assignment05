@@ -21,5 +21,18 @@
 %ay: y acceleration of the box
 %atheta: angular acceleration of the box
 function [ax,ay,atheta] = compute_accel(x,y,theta,box_params)
-    %your code here
+    P_now = compute_rbt(x,y,theta,box_params.P_box);   % 2 x n
+    F_net = [0; -box_params.m*box_params.g];
+    torque = 0;
+    for i = 1:length(box_params.k_list)
+        PA = box_params.P_world(:,i);   % fixed end
+        PB = P_now(:,i);                % box end
+        F = compute_spring_force(box_params.k_list(i), box_params.l0_list(i), PA, PB);
+        r = PB - [x;y];
+        F_net  = F_net + F;
+        torque = torque + (r(1)*F(2) - r(2)*F(1));
+    end
+    ax = F_net(1)/box_params.m;
+    ay = F_net(2)/box_params.m;
+    atheta = torque/box_params.I;
 end
